@@ -7,6 +7,7 @@ public class Main {
     if(args.length == 0) {
       System.out.println("usage:");
       System.out.println(" ./gradlew run --args=\"produce\"");
+      System.out.println("  ./gradlew run --args=\"consume\"");
       return;
     }
 
@@ -16,6 +17,10 @@ public class Main {
       case "produce" -> {
         EventProducer producer = new EventProducer();
         producer.produceSampleEvents();
+      }
+      case "consume" -> {
+        EventConsumer consumer = new EventConsumer();
+        consumer.consumeForever();
       }
       default -> {
         System.out.println("Unknown command: " + command);
