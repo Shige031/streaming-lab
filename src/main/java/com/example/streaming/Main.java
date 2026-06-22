@@ -10,6 +10,7 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"consume consumer-a\"");
       System.out.println("  ./gradlew run --args=\"consume consumer-b\"");
       System.out.println("  ./gradlew run --args=\"streams-print\"");
+      System.out.println("  ./gradlew run --args=\"streams-filter\"");
       return;
     }
 
@@ -26,8 +27,12 @@ public class Main {
         consumer.consumeForever();
       }
       case "streams-print" -> {
-        EventPrintStream printStream = new EventPrintStream();
-        printStream.start();
+        EventPrintStream stream = new EventPrintStream();
+        stream.start();
+      }
+      case "streams-filter" -> {
+        EventFilterStream stream = new EventFilterStream();
+        stream.start();
       }
       default -> {
         System.out.println("Unknown command: " + command);
