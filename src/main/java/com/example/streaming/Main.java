@@ -11,6 +11,7 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"consume consumer-b\"");
       System.out.println("  ./gradlew run --args=\"streams-print\"");
       System.out.println("  ./gradlew run --args=\"streams-filter\"");
+      System.out.println("  ./gradlew run --args=\"streams-to-topic\"");
       return;
     }
 
@@ -32,6 +33,10 @@ public class Main {
       }
       case "streams-filter" -> {
         EventFilterStream stream = new EventFilterStream();
+        stream.start();
+      }
+      case "streams-to-topic" -> {
+        EventToTopicStream stream = new EventToTopicStream();
         stream.start();
       }
       default -> {

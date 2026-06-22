@@ -1,0 +1,75 @@
+package com.example.streaming;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.Produced;
+
+import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
+
+public class EventToTopicStream {
+  private static final String INPUT_TOPIC = "events";
+  private static final String OUTPUT_TOPIC = "purchase-events";
+
+  private final ObjectMapper objectMapper;
+
+  public EventToTopicStream() {
+    this.objectMapper = new ObjectMapper();
+    this.objectMapper.registerModule(new JavaTimeModule());
+  }
+
+  public void start() throws Exception {
+    Properties props = new Properties();
+
+    props.put(StreamsConfig.APPLICATION_ID_CONFIG, "streaming-lab-to-topic-stream");
+    props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+
+    props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+    props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+
+    props.put(StreamsConfig.consumerPrefix("auto.offset.reset"), "earliest");
+
+    StreamsBuilder builder = new StreamsBuilder();
+
+    KStream<String, String> events = builder.stream(INPUT_TOPIC);
+
+    KStream<String, String> purchaseEvents = events.filter((key, value) -> {
+      try {
+        Event event = objectMapper.readValue(value, Event.class);
+        return "purchase".equals(event.getEventName());
+      } catch (Exception e) {
+        throw new RuntimeException("Failed to parse event JSON: " + value, e);
+      }
+    });
+
+    purchaseEvents.peek((key, value) -> {
+      System.out.printf("[streams-to-topic] output key=%s, value=%s%n", key, value);
+    });
+
+    purchaseEvents.to(
+      OUTPUT_TOPIC,
+      Produced.with(Serdes.String(), Serdes.String())
+    );
+
+    KafkaStreams streams = new KafkaStreams(builder.build(), props);
+
+    CountDownLatch latch = new CountDownLatch(1);
+
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      System.out.println("[streams-to-topic] shutting down...");
+      streams.close();
+      latch.countDown();
+    }));
+
+    streams.start();
+
+    System.out.println("[streams-to-topic] started. Waiting for events...");
+
+    latch.await();
+  }
+}
