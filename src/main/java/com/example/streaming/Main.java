@@ -9,6 +9,7 @@ public class Main {
       System.out.println(" ./gradlew run --args=\"produce\"");
       System.out.println("  ./gradlew run --args=\"consume consumer-a\"");
       System.out.println("  ./gradlew run --args=\"consume consumer-b\"");
+      System.out.println("  ./gradlew run --args=\"streams-print\"");
       return;
     }
 
@@ -23,6 +24,10 @@ public class Main {
         String consumerName = args.length >= 2 ? args[1] : "consumer-default";
         EventConsumer consumer = new EventConsumer(consumerName);
         consumer.consumeForever();
+      }
+      case "streams-print" -> {
+        EventPrintStream printStream = new EventPrintStream();
+        printStream.start();
       }
       default -> {
         System.out.println("Unknown command: " + command);
