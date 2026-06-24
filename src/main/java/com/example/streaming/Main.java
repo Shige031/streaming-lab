@@ -13,6 +13,7 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"streams-filter\"");
       System.out.println("  ./gradlew run --args=\"streams-to-topic\"");
       System.out.println("  ./gradlew run --args=\"streams-select-key\"");
+      System.out.println("  ./gradlew run --args=\"streams-count-by-event-name\"");
       return;
     }
 
@@ -42,6 +43,10 @@ public class Main {
       }
       case "streams-select-key" -> {
         EventSelectKeyStream stream = new EventSelectKeyStream();
+        stream.start();
+      }
+      case "streams-count-by-event-name" -> {
+        EventCountByNameStream stream = new EventCountByNameStream();
         stream.start();
       }
       default -> {
