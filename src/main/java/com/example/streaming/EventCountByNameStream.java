@@ -10,6 +10,7 @@ import org.apache.kafka.streams.kstream.Grouped;
 import org.apache.kafka.streams.kstream.KGroupedStream;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 
 import java.util.Properties;
@@ -37,6 +38,9 @@ public class EventCountByNameStream {
 
     props.put(StreamsConfig.consumerPrefix("auto.offset.reset"), "earliest");
 
+   // Kafka Streamsのローカル state store をどこに置くかを指定。
+    props.put(StreamsConfig.STATE_DIR_CONFIG, "./tmp/kafka-streams");
+
     StreamsBuilder builder = new StreamsBuilder();
 
     KStream<String, String> events = builder.stream(INPUT_TOPIC);
@@ -52,7 +56,7 @@ public class EventCountByNameStream {
 
     KGroupedStream<String, String> groupedByEventName = eventsByName.groupByKey(Grouped.with(Serdes.String(), Serdes.String()));
 
-    KTable<String, Long> counts = groupedByEventName.count();
+    KTable<String, Long> counts = groupedByEventName.count(Materialized.as("event-counts-store"));
 
     // toStream() は KTable を KStream に変換する操作。更新がストリームとして出力される。
     counts.toStream().peek((eventName, count) -> {
