@@ -14,6 +14,8 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"streams-to-topic\"");
       System.out.println("  ./gradlew run --args=\"streams-select-key\"");
       System.out.println("  ./gradlew run --args=\"streams-count-by-event-name\"");
+      System.out.println("  ./gradlew run --args=\"write-cassandra\"");
+      System.out.println("  ./gradlew run --args=\"streams-count-to-cassandra\"");
       return;
     }
 
@@ -47,6 +49,14 @@ public class Main {
       }
       case "streams-count-by-event-name" -> {
         EventCountByNameStream stream = new EventCountByNameStream();
+        stream.start();
+      }
+      case "write-cassandra" -> {
+        CassandraEventCountWriter writer = new CassandraEventCountWriter();
+        writer.writeSampleCounts();
+      }
+      case "streams-count-to-cassandra" -> {
+        EventCountToCassandraStream stream = new EventCountToCassandraStream();
         stream.start();
       }
       default -> {
