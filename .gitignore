@@ -20,3 +20,9 @@ build/
 .DS_Store
 Thumbs.db
 
+# TypeScript
+*.tsbuildinfo
+
+# Control Plane
+control-plane/node_modules/
+control-plane/dist/

@@ -1,0 +1,20 @@
+{
+  "name": "control-plane",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "produce-rule": "tsx src/produceRule.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "kafkajs": "^2.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3"
+  }
+}

@@ -16,6 +16,9 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"streams-count-by-event-name\"");
       System.out.println("  ./gradlew run --args=\"write-cassandra\"");
       System.out.println("  ./gradlew run --args=\"streams-count-to-cassandra\"");
+      System.out.println("  ./gradlew run --args=\"streams-read-rules\"");
+      System.out.println("  ./gradlew run --args=\"streams-rules-global-table\"");
+      System.out.println("  ./gradlew run --args=\"streams-event-rule-join\"");
       return;
     }
 
@@ -57,6 +60,18 @@ public class Main {
       }
       case "streams-count-to-cassandra" -> {
         EventCountToCassandraStream stream = new EventCountToCassandraStream();
+        stream.start();
+      }
+      case "streams-read-rules" -> {
+        RuleReadStream stream = new RuleReadStream();
+        stream.start();
+      }
+      case "streams-rules-global-table" -> {
+        RuleGlobalTableStream stream = new RuleGlobalTableStream();
+        stream.start();
+      }
+      case "streams-event-rule-join" -> {
+        EventRuleJoinStream stream = new EventRuleJoinStream();
         stream.start();
       }
       default -> {
