@@ -19,6 +19,9 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"streams-read-rules\"");
       System.out.println("  ./gradlew run --args=\"streams-rules-global-table\"");
       System.out.println("  ./gradlew run --args=\"streams-event-rule-join\"");
+      System.out.println("  ./gradlew run --args=\"streams-event-rule-to-postgres\"");
+      System.out.println("  ./gradlew run --args=\"produce-duplicate\"");
+      System.out.println("  ./gradlew run --args=\"streams-event-rule-with-failure\"");
       return;
     }
 
@@ -72,6 +75,18 @@ public class Main {
       }
       case "streams-event-rule-join" -> {
         EventRuleJoinStream stream = new EventRuleJoinStream();
+        stream.start();
+      }
+      case "streams-event-rule-to-postgres" -> {
+        EventRuleToPostgresStream stream = new EventRuleToPostgresStream();
+        stream.start();
+      }
+      case "produce-duplicate" -> {
+        DuplicateEventProducer producer = new DuplicateEventProducer();
+        producer.produceDuplicatePurchaseEvent();
+      }
+      case "streams-event-rule-with-failure" -> {
+        EventRuleToPostgresWithFailureStream stream = new EventRuleToPostgresWithFailureStream();
         stream.start();
       }
       default -> {
