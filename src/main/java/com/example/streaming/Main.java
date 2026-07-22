@@ -22,6 +22,10 @@ public class Main {
       System.out.println("  ./gradlew run --args=\"streams-event-rule-to-postgres\"");
       System.out.println("  ./gradlew run --args=\"produce-duplicate\"");
       System.out.println("  ./gradlew run --args=\"streams-event-rule-with-failure\"");
+      System.out.println("  ./gradlew run --args=\"produce-segmentation-results\"");
+      System.out.println("  ./gradlew run --args=\"streams-read-segmentation-results\"");
+      System.out.println("  ./gradlew run --args=\"streams-event-window-store\"");
+      System.out.println("  ./gradlew run --args=\"streams-event-reevaluation\"");
       return;
     }
 
@@ -87,6 +91,22 @@ public class Main {
       }
       case "streams-event-rule-with-failure" -> {
         EventRuleToPostgresWithFailureStream stream = new EventRuleToPostgresWithFailureStream();
+        stream.start();
+      }
+      case "produce-segmentation-results" -> {
+        SegmentationResultProducer producer = new SegmentationResultProducer();
+        producer.produceSampleResults();
+      }
+      case "streams-read-segmentation-results" -> {
+        SegmentationResultReadStream stream = new SegmentationResultReadStream();
+        stream.start();
+      }
+      case "streams-event-window-store" -> {
+        EventWindowStoreStream stream = new EventWindowStoreStream();
+        stream.start();
+      }
+      case "streams-event-reevaluation" -> {
+        EventReevaluationStream stream = new EventReevaluationStream();
         stream.start();
       }
       default -> {
